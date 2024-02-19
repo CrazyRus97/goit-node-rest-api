@@ -60,3 +60,5 @@ export const updateFavorite = catchAsync(async (req, res) => {
   }
   res.status(200).json(result);
 });
+
+//mongodb+srv://fedorenkoruslan97:<RolandoBlum_97>@cluster0.agpv1yl.mongodb.net/?retryWrites=true&w=majority
