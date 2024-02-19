@@ -1,88 +1,64 @@
-import { listContacts, getContactById, removeContact, addContact, updateContactData} from "../services/contactsServices.js"
-import { createContactSchema, updateContactSchema } from "../schemas/contactsSchemas.js";
+import {
+  getAll,
+  getContactById,
+  addContact,
+  removeContact,
+  updateContact,
+  updateStatusContact,
+} from "../services/contactsServices.js";
+import HttpError from "../utils/HttpError.js";
+import catchAsync from "../utils/catchAsync.js";
 
-export const getAllContacts = async (req, res) => {
-  try {
-    const contacts = await listContacts();
-    res.status(200).json(contacts);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal Server Error' });
-  }
-};
+export const getAllContacts = catchAsync(async (req, res) => {
+  const result = await getAll();
+  res.status(200).json(result);
+});
 
-export const getOneContact = async (req, res) => {
-  try {
-    const contactId = req.params.id;
-    const contact = await getContactById(contactId);
-
-    if (contact) {
-      res.status(200).json(contact);
-    } else {
-      res.status(404).json({ message: 'Not found' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal Server Error' });
-  }
-};
-
-export const deleteContact = async (req, res) => {
-  try {
-    const contactId = req.params.id;
-    const deletedContact = await removeContact(contactId);
-
-    if (deletedContact) {
-      res.status(200).json(deletedContact);
-    } else {
-      res.status(404).json({ message: 'Not found' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal Server Error' });
-  }
-};
-
-export const createContact = async (req, res) => {
-  try {
-    const { error } = createContactSchema.validate(req.body);
-
-    if (error) {
-      return res.status(400).json({ message: error.message });
-    }
-    const newContact = await addContact(req.body);
-    res.status(201).json(newContact);
-  }
-    catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal Server Error' });
-}
-};
-
-export const updateContact = async (req, res) => {
-  try {
-    const contactId = req.params.id;
-
-    if (Object.keys(req.body).length === 0) {
-      return res.status(400).json({ message: 'Body must have at least one field' });
-    }
-    const { error } = updateContactSchema.validate(req.body);
-
-    if (error) {
-      return res.status(400).json({ message: error.message });
-    }
-
-    const updatedContact = await updateContactData(contactId, req.body);
-
-    if (updatedContact) {
-      res.status(200).json(updatedContact);
-    } else {
-      res.status(404).json({ message: 'Not found' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal Server Error' });
+export const getOneContact = catchAsync(async (req, res) => {
+  const result = await getContactById(req.params.id);
+  if (!result) {
+    throw HttpError(404);
   }
   res.status(200).json(result);
 });
-//test
+
+export const deleteContact = catchAsync(async (req, res) => {
+  const result = await removeContact(req.params.id);
+  if (!result) {
+    throw HttpError(404);
+  }
+  res.status(200).json(result);
+  return;
+});
+
+export const createContact = catchAsync(async (req, res) => {
+  const constact = await addContact(req.body);
+  res.status(201).json(constact);
+});
+
+export const updateContactById = catchAsync(async (req, res) => {
+  const keys = Object.keys(req.body);
+  if (keys.length === 0) {
+    throw HttpError(400, "Body must have at least one field");
+  }
+
+  const result = await updateContact(req.params.id, req.body, {
+    new: true,
+  });
+  if (!result) {
+    throw HttpError(404);
+  }
+  return res.status(200).json(result);
+});
+
+export const updateFavorite = catchAsync(async (req, res) => {
+  const result = await updateStatusContact(req.params.id, req.body, {
+    new: true,
+  });
+  if (!result) {
+    throw HttpError(404);
+  }
+  res.status(200).json(result);
+});
+
+//mongodb+srv://fedorenkoruslan97:RolandoBlum_97@cluster0.agpv1yl.mongodb.net/?retryWrites=true&w=majority
