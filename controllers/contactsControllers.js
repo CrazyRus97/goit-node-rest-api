@@ -60,3 +60,4 @@ export const updateFavorite = catchAsync(async (req, res) => {
   }
   res.status(200).json(result);
 });
+//test
