@@ -23,4 +23,6 @@ const contactSchema = new Schema(
   }
 );
 
-export const Contact = model("contact", contactSchema);
+const catchAsync = model("contact", contactSchema);
+
+export default catchAsync
