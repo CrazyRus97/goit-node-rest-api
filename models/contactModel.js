@@ -16,6 +16,11 @@ const contactSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: "user",
+      required: true,
+    },
   },
   {
     versionKey: false,
@@ -23,6 +28,4 @@ const contactSchema = new Schema(
   }
 );
 
-const Contact = model("contact", contactSchema);
-
-export default Contact
+export const Contact = model("contact", contactSchema);
