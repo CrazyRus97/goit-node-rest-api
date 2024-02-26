@@ -12,7 +12,7 @@ import {
   loginSchema,
   registerSchema,
   updateSubSchema,
-} from "../schemas/usersSchemas.js";
+} from "../schemas/userSchemas.js";
 import { authenticate } from "../middlewares/authMiddleware.js";
 
 export const authRouter = express.Router();
