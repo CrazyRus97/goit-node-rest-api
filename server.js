@@ -2,9 +2,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import { app } from "./app.js";
 
-dotenv.config({path: process.env.NODE_ENV === 'development'  ? './development.env' : './production.env'});
-
-mongoose.set("strictQuery", true);
+dotenv.config({ path:  './.env' });
 
 mongoose
   .connect(process.env.DB_HOST)
