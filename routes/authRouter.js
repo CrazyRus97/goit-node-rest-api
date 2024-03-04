@@ -6,14 +6,16 @@ import {
   logoutCtrl,
   getCurrent,
   changeSubType,
+  updateAvatarCtrl,
 } from "../controllers/authController.js";
 import { validateBody } from "../utils/index.js";
 import {
   loginSchema,
   registerSchema,
   updateSubSchema,
-} from "../schemas/userSchemas.js";
+} from "../schemas/usersSchemas.js";
 import { authenticate } from "../middlewares/authMiddleware.js";
+import { upload } from "../middlewares/upload.js";
 
 export const authRouter = express.Router();
 
@@ -30,4 +32,11 @@ authRouter.patch(
   authenticate,
   validateBody(updateSubSchema),
   changeSubType
+);
+
+authRouter.patch(
+  "/avatars",
+  authenticate,
+  upload.single("avatar"),
+  updateAvatarCtrl
 );
